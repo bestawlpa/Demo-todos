@@ -3,4 +3,5 @@ export interface ItemPost {
     title: string
     content: string
     status: string
+    time: number
 }

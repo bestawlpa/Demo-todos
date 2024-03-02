@@ -21,7 +21,7 @@ const Post = () => {
   const [todos, setTodos] = useState<ItemPost[]>([]);
 
   useEffect(() => {
-    const q = query(collection(db, "todos"), orderBy("id"));
+    const q = query(collection(db, "todos"), orderBy("time"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       let todoArr = [];
       querySnapshot.forEach((doc) => {
@@ -50,6 +50,7 @@ const Post = () => {
         title: title,
         content: content,
         status: "complete",
+        time: new Date(),
       });
       setTitle("");
       setContent("");
@@ -66,7 +67,7 @@ const Post = () => {
     }
   };
 
-  const editTodo = (id: string) => {
+  const editTodo = (id: doc) => {
     const edited = todos.filter((todo) => {
       return todo.id === id;
     });
