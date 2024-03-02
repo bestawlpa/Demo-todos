@@ -79,15 +79,44 @@ const Post = () => {
     setTodos([...todos]);
   };
 
-  const saveTodo = (id: string) => {
-    const saved = todos.filter((todo) => {
-      return todo.id === id;
-    });
-    saved[0].title = editTitle;
-    saved[0].content = editContent;
-    saved[0].status = "complete";
-    setTodos([...todos]);
+  const saveTodo = async (id: string) => {
+    try {
+      const todoRef = doc(db, "todos", id);
+
+      // Update the fields of the document
+      await updateDoc(todoRef, {
+        title: editTitle,
+        content: editContent,
+        status: "complete",
+      });
+
+      // Optionally, you can also update the local state (todos)
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            title: editTitle,
+            content: editContent,
+            status: "complete",
+          };
+        }
+        return todo;
+      });
+      setTodos(updatedTodos);
+    } catch (error) {
+      console.error("Error updating todo:", error);
+    }
   };
+
+  // const saveTodo = (id: string) => {
+  //   const saved = todos.filter((todo) => {
+  //     return todo.id === id;
+  //   });
+  //   saved[0].title = editTitle;
+  //   saved[0].content = editContent;
+  //   saved[0].status = "complete";
+  //   setTodos([...todos]);
+  // };
 
   const remove = (id: string) => {
     const dataId = query(collection(db, "todos"));
