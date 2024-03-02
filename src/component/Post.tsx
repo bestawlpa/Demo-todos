@@ -15,6 +15,8 @@ import {
   onSnapshot,
   orderBy,
   query,
+  setDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 const Post = () => {
@@ -67,7 +69,7 @@ const Post = () => {
     }
   };
 
-  const editTodo = (id: doc) => {
+  const editTodo = (id: string) => {
     const edited = todos.filter((todo) => {
       return todo.id === id;
     });
