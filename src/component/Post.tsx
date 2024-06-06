@@ -15,7 +15,6 @@ import {
   onSnapshot,
   orderBy,
   query,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
 
@@ -34,7 +33,7 @@ const Post = () => {
     });
     return () => unsubscribe();
   }, []);
-
+  
   const [title, setTitle] = useState<string>("");
 
   const [content, setContent] = useState<string>("");
@@ -107,16 +106,6 @@ const Post = () => {
       console.error("Error updating todo:", error);
     }
   };
-
-  // const saveTodo = (id: string) => {
-  //   const saved = todos.filter((todo) => {
-  //     return todo.id === id;
-  //   });
-  //   saved[0].title = editTitle;
-  //   saved[0].content = editContent;
-  //   saved[0].status = "complete";
-  //   setTodos([...todos]);
-  // };
 
   const remove = (id: string) => {
     const dataId = query(collection(db, "todos"));
@@ -202,3 +191,4 @@ const Post = () => {
 };
 
 export default Post;
+
