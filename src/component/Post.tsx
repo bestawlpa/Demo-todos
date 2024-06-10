@@ -17,13 +17,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-interface ItemPost {
-    id: string;
-    title: string;
-    content: string;
-    status: string;
-    time: string;
-}
+
 
 const Post = () => {
   const [todos, setTodos] = useState<ItemPost[]>([]);
@@ -38,7 +32,8 @@ const Post = () => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const todoArr: ItemPost[] = [];
       querySnapshot.forEach((doc) => {
-        todoArr.push({ ...doc.data(), id: doc.id });
+        todoArr.push({ ...doc.data(), id: doc.id } as ItemPost);
+
       });
       setTodos(todoArr);
     });

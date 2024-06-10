@@ -2,7 +2,7 @@ import ReplyIcon from "@mui/icons-material/Reply";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 
 
-const Edit = (props) => {
+const Edit = (props: any) => {
   const {
     todo,
     editTitle,

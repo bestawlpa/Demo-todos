@@ -1,6 +1,7 @@
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import { ItemPost } from "../interface/ItemPost";
 
-const Zoom = (props) => {
+const Zoom = (props: any) => {
   const { clickedItem, todos, setClickedItem } = props;
   return (
     clickedItem && (
@@ -10,7 +11,7 @@ const Zoom = (props) => {
             Title : {"  "}
             <span className=" text-[#637A9F] font-normal">
               {
-                todos.filter((item) => {
+                todos.filter((item: ItemPost) => {
                   return item.id === clickedItem;
                 })[0]?.title
               }
@@ -20,7 +21,7 @@ const Zoom = (props) => {
             Content :{"  "}
             <span className=" text-[#637A9F] font-normal">
               {
-                todos.find((item) => {
+                todos.find((item: ItemPost) => {
                   return item.id === clickedItem;
                 })?.content
               }

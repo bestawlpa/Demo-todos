@@ -2,7 +2,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 
-const List = (props) => {
+
+const List = (props: any) => {
   const { todo, editTodo, handleClick, remove } = props;
   return (
     <div
