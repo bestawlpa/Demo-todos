@@ -1,4 +1,3 @@
-import React from "react";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
 const Zoom = (props) => {

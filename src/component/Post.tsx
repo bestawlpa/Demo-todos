@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ItemPost } from "../interface/ItemPost";
 import EastIcon from "@mui/icons-material/East";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../utils/firemase";
-
 import List from "./List";
 import Edit from "./Edit";
 import Zoom from "./Zoom";
@@ -18,35 +17,37 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
+interface ItemPost {
+    id: string;
+    title: string;
+    content: string;
+    status: string;
+    time: string;
+}
+
 const Post = () => {
   const [todos, setTodos] = useState<ItemPost[]>([]);
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [clickedItem, setClickedItem] = useState<string | null>(null);
+  const [editTitle, editSetTitle] = useState<string>("");
+  const [editContent, editSetContent] = useState<string>("");
 
   useEffect(() => {
     const q = query(collection(db, "todos"), orderBy("time"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let todoArr = [];
+      const todoArr: ItemPost[] = [];
       querySnapshot.forEach((doc) => {
         todoArr.push({ ...doc.data(), id: doc.id });
-        console.log(doc.data());
       });
       setTodos(todoArr);
     });
     return () => unsubscribe();
   }, []);
-  
-  const [title, setTitle] = useState<string>("");
-
-  const [content, setContent] = useState<string>("");
-
-  const [clickedItem, setClickedItem] = useState(null);
-
-  const [editTitle, editSetTitle] = useState<string>("");
-
-  const [editContent, editSetContent] = useState<string>("");
 
   const addTodo = async () => {
     try {
-      const docRef = await addDoc(collection(db, "todos"), {
+      await addDoc(collection(db, "todos"), {
         id: uuidv4(),
         title: title,
         content: content,
@@ -61,70 +62,52 @@ const Post = () => {
   };
 
   const handleClick = (id: string) => {
-    if (clickedItem === id) {
-      setClickedItem(null);
-    } else {
-      setClickedItem(id);
-    }
+    setClickedItem(clickedItem === id ? null : id);
   };
 
   const editTodo = (id: string) => {
-    const edited = todos.filter((todo) => {
-      return todo.id === id;
-    });
-    edited[0].status = "edit";
-    editSetTitle(edited[0].title);
-    editSetContent(edited[0].content);
-    setTodos([...todos]);
+    const todo = todos.find((todo) => todo.id === id);
+    if (todo) {
+      todo.status = "edit";
+      editSetTitle(todo.title);
+      editSetContent(todo.content);
+      setTodos([...todos]);
+    }
   };
 
   const saveTodo = async (id: string) => {
     try {
       const todoRef = doc(db, "todos", id);
-
-      // Update the fields of the document
       await updateDoc(todoRef, {
         title: editTitle,
         content: editContent,
         status: "complete",
       });
 
-      // Optionally, you can also update the local state (todos)
-      const updatedTodos = todos.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            title: editTitle,
-            content: editContent,
-            status: "complete",
-          };
-        }
-        return todo;
-      });
+      const updatedTodos = todos.map((todo) =>
+        todo.id === id ? { ...todo, title: editTitle, content: editContent, status: "complete" } : todo
+      );
       setTodos(updatedTodos);
     } catch (error) {
       console.error("Error updating todo:", error);
     }
   };
 
-  const remove = (id: string) => {
-    const dataId = query(collection(db, "todos"));
-    const unsubscribeId = onSnapshot(dataId, (item) => {
-      let todoArrId = [];
-      item.forEach((item) => {
-        todoArrId.push({ ...item.data(), id: item.data().id });
-        console.log(item.data().id);
-        deleteDoc(doc(db, "todos", id));
-      });
-    });
+  const remove = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "todos", id));
+      setTodos(todos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error("Error removing todo:", error);
+    }
   };
 
   const backEdit = (id: string) => {
-    const back = todos.filter((todo) => {
-      return todo.id === id;
-    });
-    back[0].status = "complete";
-    setTodos([...todos]);
+    const todo = todos.find((todo) => todo.id === id);
+    if (todo) {
+      todo.status = "complete";
+      setTodos([...todos]);
+    }
   };
 
   return (
@@ -155,30 +138,28 @@ const Post = () => {
       </div>
       <div className=" w-full mt-5 mb-1 rounded-[12px] bg-[#9d9898] overflow-auto max-h-[300px] ">
         <div className=" flex justify-center items-center flex-col p-[3px]">
-          {todos.map((todo: ItemPost) => {
-            if (todo.status == "complete") {
-              return (
-                <List
-                  todo={todo}
-                  editTodo={editTodo}
-                  handleClick={handleClick}
-                  remove={remove}
-                />
-              );
-            } else {
-              return (
-                <Edit
-                  todo={todo}
-                  editTitle={editTitle}
-                  editSetTitle={editSetTitle}
-                  editContent={editContent}
-                  editSetContent={editSetContent}
-                  saveTodo={saveTodo}
-                  backEdit={backEdit}
-                />
-              );
-            }
-          })}
+          {todos.map((todo) =>
+            todo.status === "complete" ? (
+              <List
+                key={todo.id}
+                todo={todo}
+                editTodo={editTodo}
+                handleClick={handleClick}
+                remove={remove}
+              />
+            ) : (
+              <Edit
+                key={todo.id}
+                todo={todo}
+                editTitle={editTitle}
+                editSetTitle={editSetTitle}
+                editContent={editContent}
+                editSetContent={editSetContent}
+                saveTodo={saveTodo}
+                backEdit={backEdit}
+              />
+            )
+          )}
         </div>
       </div>
       <Zoom
@@ -191,4 +172,3 @@ const Post = () => {
 };
 
 export default Post;
-
