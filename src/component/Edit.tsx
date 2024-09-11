@@ -6,6 +6,7 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 const Edit = (props: any) => {
   const {
     todo,
+    todos,
     setTodos,
     saveTodo,
     backEdit,
@@ -21,8 +22,8 @@ const Edit = (props: any) => {
           <textarea
             value={todo.title}
             onChange={(event) => {
-              setTodos((prevTodos) =>
-                prevTodos.map((e: any) =>
+              setTodos((prevTodos: Todo[]) =>
+                prevTodos.map((e: Todo) =>
                   e.id === todo.id
                     ? { ...e, title: event.target.value }
                     : e
@@ -37,8 +38,8 @@ const Edit = (props: any) => {
           <textarea
             value={todo.content}
             onChange={(event) => {
-              setTodos((prevTodos) =>
-                prevTodos.map((e: any) =>
+              setTodos((prevTodos: Todo[]) =>
+                prevTodos.map((e: Todo) =>
                   e.id === todo.id
                     ? { ...e, content: event.target.value }
                     : e

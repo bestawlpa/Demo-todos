@@ -91,11 +91,11 @@ const Post = () => {
   };
 
   const backEdit = (id: string) => {
-    const todo = todos.find((todo) => todo.id === id);
-    if (todo) {
-      todo.status = "complete";
-      setTodos([...todos]);
-    }
+    setTodos(todos.map((todo) =>
+      todo.id === id
+        ? { ...todo, isEditing: false, status: "complete" }
+        : todo
+    ));
   };
 
   return (
