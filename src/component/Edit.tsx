@@ -27,8 +27,8 @@ const Edit = (props:  {
           <textarea
             value={todo.title}
             onChange={(event) => {
-              setTodos((prevTodos: Todo[]) =>
-                prevTodos.map((e: Todo) =>
+              setTodos((prevTodos) =>
+                prevTodos.map((e) =>
                   e.id === todo.id
                     ? { ...e, title: event.target.value }
                     : e
@@ -43,8 +43,8 @@ const Edit = (props:  {
           <textarea
             value={todo.content}
             onChange={(event) => {
-              setTodos((prevTodos: Todo[]) =>
-                prevTodos.map((e: Todo) =>
+              setTodos((prevTodos) =>
+                prevTodos.map((e) =>
                   e.id === todo.id
                     ? { ...e, content: event.target.value }
                     : e
