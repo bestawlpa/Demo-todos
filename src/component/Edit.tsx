@@ -4,7 +4,8 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import { ItemPost } from "../interface/ItemPost";
 
 
-const Edit = (props:  { 
+
+const Edit = (props: { 
   todo: ItemPost, 
   setTodos: React.Dispatch<React.SetStateAction<ItemPost[]>>, 
   saveTodo: (id: string, title: string, content: string) => void, 
