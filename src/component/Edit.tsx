@@ -1,12 +1,17 @@
 // import { Title } from "@mui/icons-material";
 import ReplyIcon from "@mui/icons-material/Reply";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import { ItemPost } from "../interface/ItemPost";
 
 
-const Edit = (props: any) => {
+const Edit = (props:  { 
+  todo: ItemPost, 
+  setTodos: React.Dispatch<React.SetStateAction<ItemPost[]>>, 
+  saveTodo: (id: string, title: string, content: string) => void, 
+  backEdit: (id: string) => void 
+}) => {
   const {
     todo,
-    todos,
     setTodos,
     saveTodo,
     backEdit,
