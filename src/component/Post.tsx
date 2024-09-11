@@ -24,8 +24,8 @@ const Post = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [clickedItem, setClickedItem] = useState<string | null>(null);
-  const [editTitle, editSetTitle] = useState<string>("");
-  const [editContent, editSetContent] = useState<string>("");
+  // const [editTitle, editSetTitle] = useState<string>("");
+  // const [editContent, editSetContent] = useState<string>("");
 
   useEffect(() => {
     const q = query(collection(db, "todos"), orderBy("time"));
@@ -47,6 +47,7 @@ const Post = () => {
         title: title,
         content: content,
         status: "complete",
+        isEditing: false,
         time: new Date(),
       });
       setTitle("");
@@ -61,32 +62,42 @@ const Post = () => {
   };
 
   const editTodo = (id: string) => {
-    const todo = todos.find((todo) => todo.id === id);
-    if (todo) {
-      todo.status = "edit";
-      editSetTitle(todo.title);
-      editSetContent(todo.content);
-      setTodos([...todos]);
-    }
+    setTodos(todos.map((e) => (e.id === id ? { ...e, isEditing: true } : e)));
   };
 
-  const saveTodo = async (id: string) => {
-    try {
-      const todoRef = doc(db, "todos", id);
-      await updateDoc(todoRef, {
-        title: editTitle,
-        content: editContent,
-        status: "complete",
-      });
+  // const saveTodo = async (id: string, newTitle: string, newContent: string) => {
+  //   setTodos(
+  //     todos.map((e) =>
+  //       e.id === id
+  //         ? {
+  //             ...e,
+  //             title: newTitle,
+  //             content: newContent,
+  //             status: "complete",
+  //             isEditing: false,
+  //           }
+  //         : e
+  //     )
+  //   );
+  // };
 
-      const updatedTodos = todos.map((todo) =>
-        todo.id === id ? { ...todo, title: editTitle, content: editContent, status: "complete" } : todo
-      );
-      setTodos(updatedTodos);
-    } catch (error) {
-      console.error("Error updating todo:", error);
-    }
-  };
+  const saveTodo = async (id: string, newTitle: string, newContent: string) => {
+  try {
+    await updateDoc(doc(db, "todos", id), {
+      title: newTitle,
+      content: newContent,
+      status: "complete",
+      isEditing: false,
+    });
+    setTodos(todos.map((e) =>
+      e.id === id
+        ? { ...e, title: newTitle, content: newContent, status: "complete", isEditing: false }
+        : e
+    ));
+  } catch (e) {
+    console.error("Error updating document: ", e);
+  }
+};
 
   const remove = async (id: string) => {
     try {
@@ -134,24 +145,22 @@ const Post = () => {
       <div className=" w-full mt-5 mb-1 rounded-[12px] bg-[#9d9898] overflow-auto max-h-[300px] ">
         <div className=" flex justify-center items-center flex-col p-[3px]">
           {todos.map((todo) =>
-            todo.status === "complete" ? (
+            todo.isEditing ? (
+              <Edit
+                key={todo.id}
+                todo={todo}
+                todos={todos}
+                setTodos={setTodos}
+                saveTodo={saveTodo}
+                backEdit={backEdit}
+              />
+            ):(
               <List
                 key={todo.id}
                 todo={todo}
                 editTodo={editTodo}
                 handleClick={handleClick}
                 remove={remove}
-              />
-            ) : (
-              <Edit
-                key={todo.id}
-                todo={todo}
-                editTitle={editTitle}
-                editSetTitle={editSetTitle}
-                editContent={editContent}
-                editSetContent={editSetContent}
-                saveTodo={saveTodo}
-                backEdit={backEdit}
               />
             )
           )}
