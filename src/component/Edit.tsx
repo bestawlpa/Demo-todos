@@ -6,7 +6,6 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 const Edit = (props: any) => {
   const {
     todo,
-    todos,
     setTodos,
     saveTodo,
     backEdit,

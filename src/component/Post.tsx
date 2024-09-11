@@ -18,14 +18,12 @@ import {
 } from "firebase/firestore";
 
 
-
 const Post = () => {
   const [todos, setTodos] = useState<ItemPost[]>([]);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [clickedItem, setClickedItem] = useState<string | null>(null);
-  // const [editTitle, editSetTitle] = useState<string>("");
-  // const [editContent, editSetContent] = useState<string>("");
+
 
   useEffect(() => {
     const q = query(collection(db, "todos"), orderBy("time"));
@@ -64,22 +62,6 @@ const Post = () => {
   const editTodo = (id: string) => {
     setTodos(todos.map((e) => (e.id === id ? { ...e, isEditing: true } : e)));
   };
-
-  // const saveTodo = async (id: string, newTitle: string, newContent: string) => {
-  //   setTodos(
-  //     todos.map((e) =>
-  //       e.id === id
-  //         ? {
-  //             ...e,
-  //             title: newTitle,
-  //             content: newContent,
-  //             status: "complete",
-  //             isEditing: false,
-  //           }
-  //         : e
-  //     )
-  //   );
-  // };
 
   const saveTodo = async (id: string, newTitle: string, newContent: string) => {
   try {
@@ -149,7 +131,6 @@ const Post = () => {
               <Edit
                 key={todo.id}
                 todo={todo}
-                todos={todos}
                 setTodos={setTodos}
                 saveTodo={saveTodo}
                 backEdit={backEdit}
