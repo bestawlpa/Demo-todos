@@ -39,6 +39,10 @@ const Post = () => {
   }, []);
 
   const addTodo = async () => {
+    if (title.trim() === "" || content.trim() === "") {
+      alert("Please fill in both title and content.");
+      return;
+    }
     try {
       await addDoc(collection(db, "todos"), {
         id: uuidv4(),
