@@ -3,5 +3,6 @@ export interface ItemPost {
     title: string
     content: string
     status: string
+    isEditing: boolean
     time: number
 }
